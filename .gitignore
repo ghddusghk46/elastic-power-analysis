@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# Build outputs
+dist/
+frontend/dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+fastapi-es/venv/
+.venv/
+
+# Environment and local secrets
+.env
+.env.*
+!.env.example
+
+# Local Elasticsearch stack and data
+elasticsearch-7.10.2/
+kibana-7.10.2/
+logstash-7.10.2/
+data/
+
+# Logs and runtime files
+*.log
+logs/
+*.pid
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/

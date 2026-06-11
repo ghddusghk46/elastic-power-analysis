@@ -1,0 +1,162 @@
+PUT /my-index # 인덱스 생성
+
+POST /my-index/_doc # 데이터 삽입
+{
+    "name": "푸코",
+    "age": 23,
+    "job": "개발자"
+}
+
+GET /my-index/_search # took: 검색 소요 시간, hits.total.value: 1: 결과 개수, _source: 실제 저장된 데이터, _score: 검색 관련도 점수
+{
+    "query": {
+        "match_all": {} # 조건 없이 다 가져옴
+    }
+}
+
+GET /my-index/_search # max_sxore: tf-idf 계산 -> 이 문서에서 단어 빈도가 얼마나 잘 매칭되는가
+{
+    "query": {
+        "match": {
+            "job": "개발자"
+        }
+    }
+}
+
+# _bulk: 한 번에 삽입, 단 주석에 민감해서 맨 위나 맨 아래에 추가
+# {"index":{}}: 다음 줄로 문서를 넣음
+# 연속 실행 시 반복 삽입
+POST /my-index/_bulk
+{"index": {}} 
+{"name": "홍푸동", "age": 14, "job": "강아지"}
+{"index": {}}
+{"name": "홍코쿤", "age": 7, "job": "강아지"}
+
+GET /my-index/_search
+{
+    "query": {
+        "match": {
+            "job": "강아지"
+        }
+    }
+}
+
+GET /my-index/_search
+{
+    "query": {
+        "match_all": {}
+    }
+}
+
+POST /my-index/_doc/x1
+{
+    "name": "홍연화",
+    "age": 23,
+    "job": "개발자"
+}
+
+POST /my-index/_update/x1 # 내용 업데이트
+{
+    "doc": {
+        "age": 17
+    }
+}
+
+DELETE /my-index/_doc/x1 # 특정 문서 하나만 지움
+
+DELETE /my-index # 테이블 자체 날림
+
+POST /my-index/_bulk
+{"index":{"_id":"1"}}
+{"name": "홍푸동", "age": 14, "job": "강아지"}
+{"index":{"_id":"2"}}
+{"name": "홍코쿤", "age": 7, "job": "강아지"}
+{"index":{"_id":"3"}}
+{"name": "푸코", "age": 23, "job": "개발자"}
+
+# 범위 검색
+GET /my-index/_search
+{
+    "query": {
+        "range": {
+            "age": {
+                "gte": 20,
+                "lte": 30
+            } # gt, lt -> 초과, 미만 // gte, lte: 이상, 이하
+        }
+    }
+}
+
+# 복합 조건 검색
+# must: 모든 조건 만족 (AND), should: 하나라도 만족 (OR), must_not: 조건 제외 (NOT)
+GET /my-index/_search
+{
+    "query": {
+        "bool": {
+            "must": [ 
+                { "match": { "job": "강아지"} },
+                { "range": { "age": { "gte": 5 } } }
+            ]
+        }
+    }
+}
+
+# 정렬
+GET /my-index/_search
+{
+    "query": {"match_all": {}},
+    "sort": [
+        { "age": {"order": "asc"} }
+    ]
+}
+
+# 페이징: 한 번에 다 가져오지 않고 나눠서 가져옴
+# from: 몇 번째부터, size: 몇 개
+GET /my-index/_search
+{
+    "query": {"match_all": {} },
+    "from": 0,
+    "size": 2
+}
+
+# 매핑
+# text: 형태소 분석 후 검색 (긴 문장, 본문), keyword: 정확히 일치할 때만 검색
+PUT /myindex2
+{
+    "mappings": {
+        "properties": {
+            "name": { "type": "text" },
+            "age": { "type": "integer" },
+            "job": { "type": "keyword" },
+            "created_at": { "type": "date" }
+        }
+    }
+}
+
+# 집계
+GET /my-index/_search
+{
+    "aggs": {
+        "avg_age": {
+            "avg": {
+                "field": "age"
+            }
+        }
+    }
+}
+
+# 그룹핑 집계
+# 직업별로 몇 명인가?
+GET /my-index/_search
+{
+    "aggs": {
+        "jobs_count": {
+            "terms": {
+                "field": "job.keyword"
+            }
+        }
+    }
+}
+
+# 보유 인덱스 확인
+GET _cat/indices?v
