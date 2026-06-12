@@ -1,4 +1,4 @@
-from elasticsearch import Elasticsearch, helpers
+from elasticsearch import Elasticsearch, helpers # bulk 등 (helpers 안)
 
 es = Elasticsearch(["http://localhost:9200"])
 

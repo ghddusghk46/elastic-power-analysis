@@ -9,9 +9,21 @@ const themeName = {
 };
 
 const themeImages = {
-  "구성원 수": ["/images/member1.png", "/images/member2.png"],
-  "주거 형태": ["/images/house1.png", "/images/house2.png"],
-  "지역": ["/images/region1.png", "/images/region2.png"],
+  "구성원 수": [
+    "/images/member1.png",
+    "/images/member2.png",
+    "/images/member3.png",
+  ],
+  "주거 형태": [
+    "/images/house1.png",
+    "/images/house2.png",
+    "/images/house3.png",
+  ],
+  "지역": [
+    "/images/region1.png",
+    "/images/region2.png",
+    "/images/region3.png",
+  ],
 };
 
 function MemberPage() {
@@ -20,10 +32,13 @@ function MemberPage() {
   const [selectedMenu, setSelectedMenu] = useState(
     themeName[theme] || "구성원 수"
   );
-
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [queryOpen, setQueryOpen] = useState(false);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const selectedImages = themeImages[selectedMenu];
 
   async function handleAsk(e) {
     e.preventDefault();
@@ -57,6 +72,13 @@ function MemberPage() {
     }
   }
 
+  function changeMenu(menuName) {
+    setSelectedMenu(menuName);
+    setGalleryOpen(false);
+    setQueryOpen(false);
+    setAnswer("");
+  }
+
   return (
     <main className="select-page">
       <Link to="/" className="search-home-link">
@@ -72,45 +94,94 @@ function MemberPage() {
         </div>
 
         <div className="select-menu">
-          <button type="button" onClick={() => setSelectedMenu("구성원 수")}>
+          <button type="button" onClick={() => changeMenu("구성원 수")}>
             구성원 수
           </button>
-          <button type="button" onClick={() => setSelectedMenu("주거 형태")}>
+          <button type="button" onClick={() => changeMenu("주거 형태")}>
             주거 형태
           </button>
-          <button type="button" onClick={() => setSelectedMenu("지역")}>
+          <button type="button" onClick={() => changeMenu("지역")}>
             지역
           </button>
         </div>
       </div>
 
       <section className="search-content">
-        <div className="theme-image-area">
-          {themeImages[selectedMenu].map((imageSrc, index) => (
+        <div className="feature-panel-row">
+          <button
+  className="feature-card image-card"
+  type="button"
+  aria-label={`${selectedMenu} 이미지 ${galleryOpen ? "닫기" : "열기"}`}
+  onClick={() => setGalleryOpen((prev) => !prev)}
+>
+            {selectedImages.map((imageSrc, index) => (
+              <img
+                key={imageSrc}
+                src={imageSrc}
+                alt={`${selectedMenu} 미리보기 ${index + 1}`}
+                className={`preview-image preview-image-${index + 1}`}
+              />
+            ))}
+          </button>
+
+          <button
+            className="feature-card query-card"
+            type="button"
+            aria-label={`${selectedMenu} 조회 ${queryOpen ? "닫기" : "열기"}`}
+            onClick={() => setQueryOpen((prev) => !prev)}
+          >
+            <span className="query-preview-input">궁금한점을 입력하세요</span>
             <img
-              key={imageSrc}
-              src={imageSrc}
-              alt={`${selectedMenu} 이미지 ${index + 1}`}
-              className="theme-image"
+              src="/images/search.png"
+              alt=""
+              className="query-preview-icon"
             />
-          ))}
+            <span className="query-preview-answer">
+              <span />
+              <span />
+              <span />
+            </span>
+          </button>
         </div>
 
-        <form className="ask-area" onSubmit={handleAsk}>
-          <input
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            placeholder="궁금한점을 입력하세요"
-            className="ask-input"
-          />
+        {galleryOpen && (
+          <div className="theme-image-area">
+            {selectedImages.map((imageSrc, index) => (
+              <img
+                key={imageSrc}
+                src={imageSrc}
+                alt={`${selectedMenu} 이미지 ${index + 1}`}
+                className="theme-image"
+              />
+            ))}
+          </div>
+        )}
 
-          <button type="submit" className="ask-search-button">
-            <img src="/images/search.png" alt="검색" className="ask-search-icon" />
-          </button>
-        </form>
+        {queryOpen && (
+          <div className="query-panel">
+            <form className="ask-area" onSubmit={handleAsk}>
+              <input
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
+                placeholder="궁금한점을 입력하세요"
+                className="ask-input"
+              />
 
-        {loading && <div className="answer-box loading-box">답변을 불러오는 중</div>}
-        {!loading && answer && <div className="answer-box">{answer}</div>}
+              <button type="submit" className="ask-search-button">
+                <img
+                  src="/images/search.png"
+                  alt="검색"
+                  className="ask-search-icon"
+                />
+              </button>
+            </form>
+
+            {loading && (
+              <div className="answer-box loading-box">답변을 불러오는 중</div>
+            )}
+            {!loading && answer && <div className="answer-box">{answer}</div>}
+          </div>
+        )}
       </section>
     </main>
   );
