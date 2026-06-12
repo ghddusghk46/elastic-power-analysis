@@ -4,7 +4,7 @@ es = Elasticsearch(["http://localhost:9200"])
 
 LABEL_INDEX = "power-label-v1"
 USAGE_INDEX = "power-usage-v2"
-TARGET_INDEX = "power-household-analysis-v1"
+TARGET_INDEX = "power-household-analysis-v2"
 
 TARGET_FIELDS = {
     "memberNo",

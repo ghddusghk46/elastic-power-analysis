@@ -277,3 +277,14 @@ C:\elastic
 - 로컬 LLM LoRA 파인튜닝
 - 질문 로그 기반 사용자 관심 테마 분석
 - 이상치 제거 기준을 사용자가 선택할 수 있도록 개선
+
+
+## ELK 운영 구성
+
+- Index Template을 사용해 power-analysis-* 분석 인덱스의 필드 타입을 고정했습니다.
+- Alias를 사용해 power-analysis-current와 power-kibana-summary-current가 현재 운영 인덱스를 가리키도록 구성했습니다.
+- Logstash pipeline 설정은 logstash-pipelines/ 디렉터리에서 관리합니다.
+- Python 분석 스크립트 make_power_analysis_index.py로 source 전력량과 label 정보를 결합해 power-analysis-v1 통합 분석 인덱스를 생성합니다.
+- Python 요약 스크립트 make_kibana_summary_index.py로 Kibana 시각화용 power-kibana-summary-v1 인덱스를 생성합니다.
+- 질문 로그는 power-question-log-v1에 저장해 서비스 사용 현황과 응답 시간을 모니터링합니다.
+- 운영 검증 쿼리는 elk_validation_queries.md에 정리했습니다.

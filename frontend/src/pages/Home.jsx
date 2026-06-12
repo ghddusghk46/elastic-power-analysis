@@ -1,33 +1,34 @@
-﻿import "../App.css";
 import { Link } from "react-router-dom";
+import "../App.css";
+
+const pageTitle = "\uc804\ub825 \uc18c\ube44 \ud328\ud134 \ubd84\uc11d \ud50c\ub7ab\ud3fc";
+
+const menuItems = [
+  { label: "\ub370\uc774\ud130 \ud488\uc9c8", theme: "quality" },
+  { label: "\uac00\uad6c \ubd84\uc11d", theme: "household" },
+  { label: "\uae30\uc5c5 \ubd84\uc11d", theme: "business" },
+  { label: "\uc9c0\uc5ed \ubd84\uc11d", theme: "region" },
+  { label: "\uc9c8\ubb38 \ub85c\uadf8", theme: "log" },
+];
 
 function Home() {
   return (
     <main className="home">
-      <h1 className="home-title">전력 소비 패턴 분석 플랫폼</h1>
+      <h1 className="home-title">{pageTitle}</h1>
 
-      
       <div className="menu-box">
-        <div className="menu-item">
-  구성원 수
-  <Link to="/search?theme=member" className="go-link">
-    <img src="/images/go.png" alt="조회하러가기" className="go-img" />
-  </Link>
-</div>
-
-<div className="menu-item">
-  주거 형태
-  <Link to="/search?theme=house" className="go-link">
-    <img src="/images/go.png" alt="조회하러가기" className="go-img" />
-  </Link>
-</div>
-
-<div className="menu-item">
-  지역
-  <Link to="/search?theme=region" className="go-link">
-    <img src="/images/go.png" alt="조회하러가기" className="go-img" />
-  </Link>
-</div>
+        {menuItems.map((item) => (
+          <div className="menu-item" key={item.theme}>
+            {item.label}
+            <Link to={`/search?theme=${item.theme}`} className="go-link">
+              <img
+                src="/images/go.png"
+                alt={"\uc870\ud68c\ud558\ub7ec\uac00\uae30"}
+                className="go-img"
+              />
+            </Link>
+          </div>
+        ))}
       </div>
     </main>
   );
